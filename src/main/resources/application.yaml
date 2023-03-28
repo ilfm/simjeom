@@ -1,0 +1,19 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        ##physical_naming_strategy: com.toongather.toongather.global.config.UpperCaseNamingStrategy
+    hibernate:
+      ddl-auto: create
+
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/C:\project\simjeom    # 자신에 맞춰 바꾸기
+    username: sa
+    password: 123
+
+logging.level:
+  org.hibernate.SQL: debug
