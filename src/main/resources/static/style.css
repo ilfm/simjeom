@@ -1,0 +1,34 @@
+body {
+  background-color: #f2f2f2;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.thumbnail {
+  border: none;
+  background-color: #fff06e;
+  color: #333;
+}
+
+.thumbnail h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.thumbnail p {
+  margin-bottom: 5px;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: auto;
+}
+
+.caption {
+  padding: 15px;
+}

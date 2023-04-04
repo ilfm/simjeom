@@ -1,67 +1,91 @@
 package com.simjeom.simjeom.domain.reviews.domain;
 
 
-import com.simjeom.simjeom.domain.keyword.dto.KeywordDto;
-import com.simjeom.simjeom.domain.restaurant.domain.Lunch;
-import com.simjeom.simjeom.domain.restaurant.dto.LunchDto;
-import com.simjeom.simjeom.domain.reviews.dto.ReviewDto;
-import com.simjeom.simjeom.global.BaseEntity;
+import com.simjeom.simjeom.domain.restaurant.domain.Restaurant;
+import com.simjeom.simjeom.domain.reviews.dto.CreateReviewRequest;
+import com.simjeom.simjeom.domain.global.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 @Entity
 @Getter @Setter
-@Builder
 @SequenceGenerator(name = "REVIEW_SEQ", sequenceName = "REVIEW_SEQ", allocationSize = 1)
 public class Review extends BaseEntity {
 
+  // 이렇게 만드는 이유가
+  // 다른곳에서 생성할수 없게 만들고 생성메소드를 통해서 생성 할 수 있도록 만드려고.
   protected Review(){
 
   }
   // 속성
-  // 리뷰아이디, 식당, 키워드 , 등록일, 수정일, 별점, 한줄평
+  // 리뷰아이디, 키워드 , 등록일, 수정일, 별점, 한줄평
   @Id
-  @GeneratedValue(generator = "REVIEW_SEQ", strategy = GenerationType.SEQUENCE)
+  @GenericGenerator(name = "SeqGenerator", strategy = "com.simjeom.simjeom.domain.global.SeqGenerator"
+      , parameters = {@Parameter(name="SEQ_NAME",value="REVIEW_SEQ"),
+      @Parameter(name="PREFIX",value="RV")})
+  @GeneratedValue(generator ="SeqGenerator")
   private String reviewId;
 
   @Column(nullable = false)
   private Integer star;
 
-  @Column(nullable = false)
-  private String menu;
-
   @Column
   private String comment;
 
+  @Column
+  private LocalDateTime visitDt;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="restaurantId")
-  private Lunch lunch;
+  private Restaurant restaurant;
 
-  @OneToMany(mappedBy = "reviewKeyword")
-  private List<ReviewKeyword> reviewKeywordList = new ArrayList<>();
+  @OneToMany(mappedBy = "review",cascade = CascadeType.ALL)
+  private List<ReviewKeyword> reviewKeyword = new ArrayList<>();
+  // 초기화 하는게 좋다.
 
-  // 생성 메소드
-  public static Review createReview(ReviewDto review, List<KeywordDto> keywordList, LunchDto restaurant){
+  // 연관관계 편의 메소드 - todo 어디에?
+  // 객체에 개념으로 와서
+  public void setRestaurant(Restaurant restaurant){
+    this.restaurant = restaurant;
+  }
+
+  public void addReviewKeyword(ReviewKeyword reviewKeyword){
+    this.reviewKeyword.add(reviewKeyword);
+    reviewKeyword.setReview(this);
+  }
+
+  // 리뷰 엔티티 생성 메소드
+  // 생성메소드는 따로 만드는게 좋다.
+  // setter도 필요한것만 열어두는 것이 좋다.
+  public static Review createReview(CreateReviewRequest request, Restaurant restaurant, ReviewKeyword... reviewKeywords){
 
     Review reveiw = new Review();
-    //review.set
+    reveiw.setStar(request.getStar());
+    reveiw.setComment(request.getComment());
+    reveiw.setRestaurant(restaurant);
+    reveiw.setVisitDt(reveiw.getVisitDt());
+    for (ReviewKeyword reviewKeyword:reviewKeywords) {
+      reveiw.addReviewKeyword(reviewKeyword);
+    }
 
     return reveiw;
-
   }
+
 
 
 

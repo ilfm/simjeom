@@ -6,7 +6,7 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         ##physical_naming_strategy: com.toongather.toongather.global.config.UpperCaseNamingStrategy
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
 
   datasource:
@@ -16,4 +16,7 @@ spring:
     password: 123
 
 logging.level:
+  root: ERROR
   org.hibernate.SQL: debug
+  com.simjeom.simjeom.domain: debug
+
