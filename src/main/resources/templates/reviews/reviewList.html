@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>심점</title>
+  <!-- 부트스트랩 CSS 불러오기 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div class="container mt-3">
+  <h3 style="text-align: center; "><i class="far fa-utensils" style=" color: #ffd43b;font-size: 40pt;"></i></h3>
+  <div class="btn-area">
+    <button class="btn btn-primary" onclick="location.href='/review/registerReview'">점심등록</button>
+  </div>
+  <!-- 검색바 -->
+
+    <div class="form-horizontal">
+      <div class="form-group row">
+        <div class="col-sm-10 mx-auto">
+          <div class="input-group w-100 shadow-sm">
+            <!-- 별점-->
+            <!--<div class="container mt-5">
+              <div class="row">
+                <div class="col-md-6 mx-auto">
+                  <select class="custom-select">
+                    <option value="">별의 개수를 선택하세요</option>
+                    <option value="1">★</option>
+                    <option value="2">★★</option>
+                    <option value="3"><i class="far fa-star"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i></option>
+                    <option value="4"><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i></option>
+                    <option value="5"><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i></option>
+                  </select>
+                </div>
+              </div>
+            </div>-->
+              <input type="text" id="search-input" class="form-control rounded-pill border-0" placeholder="검색어를 입력하세요" onkeydown="addSearchHashtag(event)">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="search-hashtag-list"></div>
+
+  <!--// 검색바-->
+  <div class="container">
+    <div class="row" id="reviewList">
+      <div class="col-md-4" th:each="review : ${response.reviews}">
+        <div class="card">
+          <img class="card-img-top" src="\images\dog.jpg" alt="Card image cap" />
+          <div class="card-body">
+            <div>
+              <span class="card-title" th:text="${review.restaurantNm}">식당명</span>
+              <span th:each="i : ${#numbers.sequence(1, review.star)}" class="star">★</span>
+            </div>
+            <div class="comment-area">
+              <span th:text="${review.comment}">없음</span>
+            </div>
+            <!--<div id="hashtag-list" >
+              <div class="hashtag" th:each="keyword : ${review.keywords}" th:text="${keyword.keywordNm}">없음</div>
+            </div>-->
+            <div style="height: 150px" id="hashtag-list" >
+              <div  class="hashtag" th:each="value : ${review.keywordString.split(',')}">
+                <span th:text="${'#'+value}"></span>
+              </div>
+            </div>
+            <div class="info-area">
+              <p class="card-text " th:text="'방문횟수: ' + ${review.visitCnt}">0</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- 부트스트랩 JS 불러오기 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
+<script>
+  // 키워드 추가
+  let hashtagArr = [];
+  function addSearchHashtag(event) {
+    if (event.key === "Enter") {
+      const searchInput = document.getElementById("search-input");
+      const hashtagList = document.getElementById("search-hashtag-list");
+      const hashtag = document.createElement("div");
+
+      // 보여지는 부분
+      hashtag.classList.add("hashtag");
+      hashtag.innerHTML = `#${searchInput.value}`;
+      hashtagArr.push(`${searchInput.value}`);
+      hashtagList.appendChild(hashtag);
+      console.log(hashtagArr);
+      searchInput.value = "";
+
+      $.ajax({
+          url: "/api/review/searchReviewList",
+          type: "GET",
+           data: {"keywords":hashtagArr},
+           traditional: true, // traditional 옵션 활성화 TODO 이거말고 다른방법..
+          error:function(request, status, error){
+              console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+          }
+      })
+      .done(function (fragment) {
+          console.log(fragment)
+          $('#reviewList').replaceWith(fragment);
+      });
+
+
+    }
+  }
+
+
+</script>
+
+</html>

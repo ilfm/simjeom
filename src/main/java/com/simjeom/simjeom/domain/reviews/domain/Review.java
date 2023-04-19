@@ -54,36 +54,33 @@ public class Review extends BaseEntity {
   @JoinColumn(name="restaurantId")
   private Restaurant restaurant;
 
-  @OneToMany(mappedBy = "review",cascade = CascadeType.ALL)
-  private List<ReviewKeyword> reviewKeyword = new ArrayList<>();
-  // 초기화 하는게 좋다.
+  @OneToMany(mappedBy = "review",cascade = CascadeType.PERSIST)
+  private List<ReviewKeyword> reviewKeyword = new ArrayList<>();  // 초기화 하는게 좋다.
 
-  // 연관관계 편의 메소드 - todo 어디에?
-  // 객체에 개념으로 와서
   public void setRestaurant(Restaurant restaurant){
     this.restaurant = restaurant;
   }
-
+  // 연관관계 편의 메소드 ======================================================================
   public void addReviewKeyword(ReviewKeyword reviewKeyword){
     this.reviewKeyword.add(reviewKeyword);
     reviewKeyword.setReview(this);
   }
-
+  // ========================================================================================
   // 리뷰 엔티티 생성 메소드
   // 생성메소드는 따로 만드는게 좋다.
   // setter도 필요한것만 열어두는 것이 좋다.
-  public static Review createReview(CreateReviewRequest request, Restaurant restaurant, ReviewKeyword... reviewKeywords){
+  public static Review createReview(CreateReviewRequest request, Restaurant restaurant,List<ReviewKeyword> reviewKeywords){
 
-    Review reveiw = new Review();
-    reveiw.setStar(request.getStar());
-    reveiw.setComment(request.getComment());
-    reveiw.setRestaurant(restaurant);
-    reveiw.setVisitDt(reveiw.getVisitDt());
+    Review review = new Review();
+    review.setStar(request.getStar());
+    review.setComment(request.getComment());
+    review.setRestaurant(restaurant);
+    review.setVisitDt(review.getVisitDt());
     for (ReviewKeyword reviewKeyword:reviewKeywords) {
-      reveiw.addReviewKeyword(reviewKeyword);
+      review.addReviewKeyword(reviewKeyword);
     }
 
-    return reveiw;
+    return review;
   }
 
 

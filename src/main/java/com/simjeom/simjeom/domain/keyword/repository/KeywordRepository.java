@@ -19,4 +19,9 @@ public class KeywordRepository {
     em.persist(keyword);
     return keyword.getKeywordId();
   }
+
+  // 키워드 찾기
+  public Keyword findById(String keywordId){
+    return em.find(Keyword.class,keywordId);
+  }
 }

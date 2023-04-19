@@ -39,11 +39,11 @@ public class ReviewKeyword extends BaseEntity {
   @GeneratedValue(generator ="SeqGenerator")
   private String reviewKeywordId;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
   @JoinColumn(name="reviewId")
   private Review review;
 
-  @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
   @JoinColumn(name = "keywordId")
   private Keyword keyword;
 

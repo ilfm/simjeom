@@ -16,7 +16,8 @@ public class RestaurantRepository {
   }
 
   // 점심 저장
-  public String save(Restaurant restaurant){
+  public String save(String restaurantNm){
+    Restaurant restaurant = Restaurant.builder().restaurantNm(restaurantNm).build();
     em.persist(restaurant);
     return restaurant.getRestaurantId();
   }

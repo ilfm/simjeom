@@ -27,7 +27,6 @@ public class SeqGenerator implements IdentifierGenerator {
   private String seqName;     // 시퀀스이름
   private String prefix;      //
 
-
   @Override
   public void configure(Type type, Properties params, ServiceRegistry serviceRegistry)
       throws MappingException {

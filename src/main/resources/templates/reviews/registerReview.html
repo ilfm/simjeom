@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>심점</title>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../style.css">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+<div class="container mt-3">
+  <h3 style="text-align: center;">점심리뷰를 등록해주세요.</h3>
+    <div class="form-group">
+      <label for="restaurant">별점</label>
+      <select class="form-control star" id="star">
+        <option value="1" class="star">★</option>
+        <option value="2" class="star">★★</option>
+        <option value="3" class="star">★★★</option>
+        <option value="4" class="star">★★★★</option>
+        <option value="5" class="star">★★★★★</option>
+      </select>
+      <!--<input type="text" class="form-control" id="star" name="restaurant"
+             placeholder="">-->
+    </div>
+    <div class="form-group">
+      <label for="restaurant">식당</label>
+      <input type="text" class="form-control" id="restaurant" name="restaurant"
+             placeholder="Enter restaurant name">
+    </div>
+    <div class="form-group">
+      <label for="date">방문일</label>
+      <input type="date" class="form-control" id="date" name="date">
+    </div>
+    <div class="form-group">
+      <label for="comment">Comment</label>
+      <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="keywords">키워드</label>
+      <input type="hidden" class="form-control" id="keywords" name="keywords"
+             placeholder="Enter keywords">
+      <input type="text" id="keyword-input" placeholder="키워드를 입력하세요"
+             onkeydown="addHashtag(event)">
+    </div>
+    <div id="hashtag-list" ></div>
+    <div class="btn-area">
+      <button type="button" class="btn btn-primary" id="createReview">등록</button>
+      <button type="button" class="btn btn-primary" id="moveToReviewList"onclick="location.href='/'">목록</button>
+    </div>
+
+</div>
+</body>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<script>
+
+      // 키워드 추가
+      function addHashtag(event) {
+        if (event.key === "Enter") {
+          const keywordInput = document.getElementById("keyword-input");
+          const hashtagList = document.getElementById("hashtag-list");
+          const hashtag = document.createElement("div");
+          hashtag.classList.add("hashtag");
+          hashtag.innerHTML = `#${keywordInput.value}`;
+          hashtagList.appendChild(hashtag);
+          keywordInput.value = "";
+        }
+      }
+
+    // 리뷰등록
+    $("#createReview").click(function(){
+      console.log("호출");
+      // 입력 값 가져오기
+      const star = new Number($('#star').val());
+      const restaurant = $('#restaurant').val();
+      const date = $('#date').val();
+      const comment = $('#comment').val();
+      let keywords =[];
+      for(var i=0; i < $('.hashtag').length; i++){
+        console.log($('.hashtag').eq(i).text());
+        keywords.push($('.hashtag').eq(i).text().replace('#',''));
+      }
+
+      // 콘솔에 출력 (디버깅 용도)
+      console.log('Rating:', star);
+      console.log('Restaurant:', restaurant);
+      console.log('Date:', date);
+      console.log('Comment:', comment);
+      console.log('Keywords:', keywords);
+
+      const data ={
+          'star':star,
+          'comment':comment,
+          'restaurantNm':restaurant,
+          'visitDt':date,
+          'keywords':keywords
+        };
+
+
+       $.ajax({
+        type: "POST",
+        url: "/api/review/createReview",
+        contentType: "application/json; charset=utf-8;",
+        data:JSON.stringify(data),
+        //data:data,
+        error:function(request, status, error){
+
+          console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+        },
+        success: function(data) {
+          alert("저장완료");
+          $("#moveToReviewList").click();
+          console.log("통신데이터 값 : " + data);
+        }
+      });
+
+
+    });
+
+
+
+</script>
