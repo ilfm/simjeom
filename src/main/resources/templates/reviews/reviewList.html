@@ -47,8 +47,8 @@
   <!--// 검색바-->
   <div class="container">
     <div class="row" id="reviewList">
-      <div class="col-md-4" th:each="review : ${response.reviews}">
-        <div class="card">
+      <div class="col-md-4" th:each="review : ${response.reviews}" >
+        <div class="card"  th:reviewId="${review.reviewId}" th:onclick="location.href='/review/reviewDetail/'+ this.getAttribute(&#39;reviewId&#39;)">
           <img class="card-img-top" src="\images\dog.jpg" alt="Card image cap" />
           <div class="card-body">
             <div>
@@ -84,24 +84,43 @@
 <script>
   // 키워드 추가
   let hashtagArr = [];
+
+  // 해시태그 추가
   function addSearchHashtag(event) {
     if (event.key === "Enter") {
       const searchInput = document.getElementById("search-input");
       const hashtagList = document.getElementById("search-hashtag-list");
       const hashtag = document.createElement("div");
+      const deleteX= document.createElement("span");
 
       // 보여지는 부분
       hashtag.classList.add("hashtag");
       hashtag.innerHTML = `#${searchInput.value}`;
+
+      deleteX.classList.add("deleteX");
+      deleteX.innerHTML =' X'
+      deleteX.id = `${searchInput.value}`;
+      hashtag.appendChild(deleteX);
+
+      // 해시태그 값 넣기
       hashtagArr.push(`${searchInput.value}`);
       hashtagList.appendChild(hashtag);
+
       console.log(hashtagArr);
       searchInput.value = "";
 
-      $.ajax({
+      // 리뷰 검색
+      searchReview(hashtagArr);
+
+    }
+  }
+
+  // 리뷰 검색
+  function searchReview(param){
+    $.ajax({
           url: "/api/review/searchReviewList",
           type: "GET",
-           data: {"keywords":hashtagArr},
+           data: {"keywords":param},
            traditional: true, // traditional 옵션 활성화 TODO 이거말고 다른방법..
           error:function(request, status, error){
               console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
@@ -111,10 +130,25 @@
           console.log(fragment)
           $('#reviewList').replaceWith(fragment);
       });
-
-
-    }
   }
+
+  // 리뷰 상세조회
+  function reviewDetail(reviewId){
+    console.log(reviewId);
+  }
+
+  // deleteX 클래스를 가진 요소를 클릭했을 때의 이벤트 핸들러
+  document.addEventListener("click", function(event) {
+    if (event.target.classList.contains("deleteX")) {
+      // 키워드 데이터 제거
+      hashtagArr.splice(hashtagArr.indexOf(event.target.id),1);
+      // 부모 요소 삭제
+      event.target.parentNode.remove();
+
+      // 리뷰 재검색
+      searchReview(hashtagArr);
+    }
+  });
 
 
 </script>

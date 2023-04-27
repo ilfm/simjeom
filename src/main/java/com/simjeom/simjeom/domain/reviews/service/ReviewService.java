@@ -9,6 +9,7 @@ import com.simjeom.simjeom.domain.restaurant.repository.RestaurantRepository;
 import com.simjeom.simjeom.domain.reviews.domain.Review;
 import com.simjeom.simjeom.domain.reviews.domain.ReviewKeyword;
 import com.simjeom.simjeom.domain.reviews.dto.CreateReviewRequest;
+import com.simjeom.simjeom.domain.reviews.dto.DetailReviewResult;
 import com.simjeom.simjeom.domain.reviews.dto.ReviewDTO;
 import com.simjeom.simjeom.domain.reviews.dto.SearchReviewResponse;
 import com.simjeom.simjeom.domain.reviews.dto.SearchReviewResult;
@@ -42,7 +43,8 @@ public class ReviewService {
     // todo 점심 중복여부 체크
     //Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId());
     // todo keyword 중복체크
-    String restaurantId = restaurantRepository.save(request.getRestaurantNm());
+    //String restaurantId = restaurantRepository.save(request.getRestaurantNm());
+    String restaurantId = "RT-68";
     Restaurant restaurant = restaurantRepository.findById(restaurantId);
 
     List<ReviewKeyword> reviewKeywords = new ArrayList<>();
@@ -50,17 +52,34 @@ public class ReviewService {
 
     for (String keyword : request.getKeywords()) {
       String keywordId = keywordRepository.save(Keyword.createKeyword(keyword));
-      ReviewKeyword reviewKeyword = ReviewKeyword.createReviewKeyword(keywordRepository.findById(keywordId));
+      ReviewKeyword reviewKeyword = ReviewKeyword.createReviewKeyword(
+          keywordRepository.findById(keywordId));
       reviewKeywords.add(reviewKeyword);
     }
-
-
 
     // 리뷰 엔티티 생성
     Review review = Review.createReview(request, restaurant, reviewKeywords);
     String reviewId = reviewRepository.save(review);
 
     return reviewId;
+  }
+
+  /**
+   * 리뷰 상세조회
+   */
+  public ReviewDTO reviewDetail() {
+    DetailReviewResult result = reviewJpaRepository.getReviewDetail();
+    System.out.println(result.getComment());
+
+    return ReviewDTO.builder()
+        .reviewId(result.getReviewId())
+        .visitCnt(result.getVisitCnt())
+        .comment(result.getComment())
+        .star(result.getStar())
+        .restaurantNm(result.getRestaurantNm())
+        .keywordString("")
+        .build();
+
   }
 
   /**
@@ -74,13 +93,6 @@ public class ReviewService {
 
     // 응답 데이터에 맞게 변환
     for (SearchReviewResult result : results) {
-
-     /* List<KeywordDto> keywords = new ArrayList<>();
-      for (String keyword : result.getKeywords().split(",")) {
-        KeywordDto keywordDto = KeywordDto.builder()
-            .keywordNm(keyword).build();
-        keywords.add(keywordDto);
-      }*/
 
       ReviewDTO reviewDTO = ReviewDTO.builder()
           .reviewId(result.getReviewId())
@@ -100,6 +112,7 @@ public class ReviewService {
         .build();
     return response;
   }
+
   /**
    * 키워드로 리뷰조회
    */

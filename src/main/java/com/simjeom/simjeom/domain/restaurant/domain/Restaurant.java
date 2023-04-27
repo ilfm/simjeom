@@ -41,7 +41,7 @@ public class Restaurant extends BaseEntity {
   @Column(nullable = true)
   @Builder.Default
   @ColumnDefault("1")
-  private Integer visitCnt =1;      //방문횟수
+  private Integer visitCnt =1;      //방문횟수jenwkwjen
 
   @Column(nullable = true)
   private String remark;       // 기타사항

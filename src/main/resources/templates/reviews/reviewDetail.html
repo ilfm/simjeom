@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Review Detail</title>
+  <!-- 부트스트랩 CSS 불러오기 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+      body {
+        background-color: #141414;
+        color: #fff;
+      }
+      .container {
+        width: 30%;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .card {
+        background-color: #2e2e2e;
+        border: 1px solid #333;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      }
+      .card-img-top {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .card-body {
+        padding: 20px;
+      }
+      .card-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+      .star {
+        color: #e5c100;
+        font-size: 20px;
+      }
+      .comment-area {
+        margin-bottom: 20px;
+      }
+      .hashtag {
+        display: inline-block;
+        background-color: #333;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 20px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+      .info-area {
+        border-top: 1px solid #333;
+        padding-top: 20px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .card-text {
+        font-size: 18px;
+      }
+    </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <!-- 이미지 맨 위에 보여주기 -->
+    <img class="card-img-top" src="\images\dog.jpg" alt="Card image cap" />
+    <div class="card-body">
+      <div>
+        <span class="card-title" th:text="${response.review.restaurantNm}">식당명</span>
+        <span
+            th:each="i : ${#numbers.sequence(1, response.review.star)}"
+            class="star"
+        >★</span
+        >
+      </div>
+      <div class="comment-area">
+        <span th:text="${response.review.comment}">없음</span>
+      </div>
+      <div style="height: 150px" id="hashtag-list">
+        <div
+            class="hashtag"
+            th:each="value : ${response.review.keywordString.split(',')}"
+        >
+          <span th:text="${'#'+value}"></span>
+        </div>
+      </div>
+      <div class="info-area">
+        <p class="card-text " th:text="'방문횟수: ' + ${response.review.visitCnt}">0</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 부트스트랩 JS 불러오기 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
+</body>
+</html>
