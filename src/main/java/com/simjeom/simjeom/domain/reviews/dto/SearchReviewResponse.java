@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter @Setter @Builder
 public class SearchReviewResponse {
 
-  private List<ReviewDTO> reviews;
+  private String menuNm;
+  private String keywordString;
+  private String eatCnt;
 
 }

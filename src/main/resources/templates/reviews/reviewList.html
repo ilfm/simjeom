@@ -17,33 +17,16 @@
     <button class="btn btn-primary" onclick="location.href='/review/registerReview'">점심등록</button>
   </div>
   <!-- 검색바 -->
-
     <div class="form-horizontal">
       <div class="form-group row">
         <div class="col-sm-10 mx-auto">
           <div class="input-group w-100 shadow-sm">
-            <!-- 별점-->
-            <!--<div class="container mt-5">
-              <div class="row">
-                <div class="col-md-6 mx-auto">
-                  <select class="custom-select">
-                    <option value="">별의 개수를 선택하세요</option>
-                    <option value="1">★</option>
-                    <option value="2">★★</option>
-                    <option value="3"><i class="far fa-star"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i></option>
-                    <option value="4"><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i></option>
-                    <option value="5"><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i><i class="far fa-star fa-lg"></i></option>
-                  </select>
-                </div>
-              </div>
-            </div>-->
               <input type="text" id="search-input" class="form-control rounded-pill border-0" placeholder="검색어를 입력하세요" onkeydown="addSearchHashtag(event)">
           </div>
         </div>
       </div>
     </div>
     <div id="search-hashtag-list"></div>
-
   <!--// 검색바-->
   <div class="container">
     <div class="row" id="reviewList">
@@ -58,9 +41,6 @@
             <div class="comment-area">
               <span th:text="${review.comment}">없음</span>
             </div>
-            <!--<div id="hashtag-list" >
-              <div class="hashtag" th:each="keyword : ${review.keywords}" th:text="${keyword.keywordNm}">없음</div>
-            </div>-->
             <div style="height: 150px" id="hashtag-list" >
               <div  class="hashtag" th:each="value : ${review.keywordString.split(',')}">
                 <span th:text="${'#'+value}"></span>

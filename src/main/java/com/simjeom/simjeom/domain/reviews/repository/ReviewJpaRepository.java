@@ -2,7 +2,7 @@ package com.simjeom.simjeom.domain.reviews.repository;
 
 import com.simjeom.simjeom.domain.reviews.domain.Review;
 import com.simjeom.simjeom.domain.reviews.dto.DetailReviewResult;
-import com.simjeom.simjeom.domain.reviews.dto.ReviewDTO;
+import com.simjeom.simjeom.domain.reviews.dto.ReviewDto;
 import com.simjeom.simjeom.domain.reviews.dto.SearchReviewResult;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,26 +47,22 @@ public interface ReviewJpaRepository extends JpaRepository<Review, String> {
           + " ON rk.keyword_Id = k.keyword_Id"
           //+ " WHERE (:keywords is null or k.keyword_nm IN :keywords)"
           + " GROUP BY r.review_id", nativeQuery = true)
-  List<SearchReviewResult> findReview();
+  List<SearchReviewResult> findReviewByKeywords();
 
   /**
-   *  리뷰 전체조회
-   *  (fetch join 사용)
-   * */
-
+   *  상세조회
+   */
   @Query("SELECT r.reviewId as reviewId"
       + ", r.star as star"
       + ", r.comment as comment"
-      + ", r.restaurant.restaurantNm as restaurantNm"
-      + ", r.restaurant.visitCnt  as visitCnt"
+      + ", r.menu.menuNm as menuNm"
       //+ ", rk.keyword.keywordNm  as keywordNm"
       //+ ", r.visitDt as visitDt"
       + " FROM Review r"
-      + " LEFT JOIN r.restaurant rt"
+      + " LEFT JOIN r.menu m"
       //+ " LEFT JOIN r.reviewKeyword rk"
       //+ " LEFT JOIN rk.keyword k"
       + " WHERE r.reviewId = 'RV-59'")
-  //@Query(value = "select r from Review r join fetch r.reviewKeyword rk")
   DetailReviewResult getReviewDetail();
 
   /*
@@ -102,6 +98,44 @@ public interface ReviewJpaRepository extends JpaRepository<Review, String> {
           + " WHERE (:keywords is null or k.keyword_nm IN :keywords)"     // keyword가 null 일때는 전체조회
           , nativeQuery = true)
   List<SearchReviewResult> searchReview(@Param("keywords") List<String> keywords);
+
+
+  /**
+   * 리뷰 검색
+   */
+  @Query(value =
+      "SELECT r.review_id as reviewId"
+          + " ,r.star as star"
+          + " ,r.comment as comment"
+          + " ,rt.restaurant_Nm as restaurantNm"
+          + " ,rt.visit_cnt as visitCnt"
+          //+ " ,r.visit_dt as visitDt"
+          + " , (select GROUP_CONCAT(k.keyword_Nm SEPARATOR ', ')"
+          + " FROM review_Keyword rk"
+          + " LEFT JOIN keyword k"
+          + " ON rk.keyword_Id = k.keyword_Id"
+          + " where rk.review_id = r.review_id"
+          + " group by rk.review_id ) as keywords"
+          + " FROM Review r"
+          + " LEFT JOIN Restaurant rt"
+          + " ON r.restaurant_Id = rt.restaurant_Id "
+          + " LEFT JOIN review_Keyword rk"
+          + " ON r.review_Id = rk.review_Id "
+          + " LEFT JOIN keyword k"
+          + " ON rk.keyword_Id = k.keyword_Id"
+          + " WHERE (:keywords is null or k.keyword_nm IN :keywords)"     // keyword가 null 일때는 전체조회
+      , nativeQuery = true)
+  List<SearchReviewResult> findByKeywords(@Param("keywords") List<String> keywords);
+
+  /**
+   *  전체 리뷰조회
+   */
+  @Query("SELECT new com.simjeom.simjeom.domain.reviews.dto.ReviewDto( r.reviewId, r.star as star, r.comment as comment, r.menu.menuNm as menuNm)"
+      + " FROM Review r"
+      + " LEFT JOIN r.menu m"
+  )
+  List<ReviewDto> findAllReview();
+
 
 }
 

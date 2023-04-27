@@ -35,8 +35,6 @@ public class ReviewController {
     return new ResponseEntity<>(reviewId, HttpStatus.CREATED);
   }
 
-
-
   /**
    * 리뷰 검색
    */
@@ -44,8 +42,8 @@ public class ReviewController {
   public String reviewList(Model model, @RequestParam(required = false) String[] keywords) {
 
     if(keywords == null){
-      SearchReviewResponse response =reviewService.searchAllReview();
-      model.addAttribute("response", response);
+      //SearchReviewResponse response =reviewService.searchAllReview();
+      //model.addAttribute("response", response);
     }else if(keywords != null){
       SearchReviewResponse response = reviewService.searchReviewByKeyword(
           Arrays.stream(keywords).toList());

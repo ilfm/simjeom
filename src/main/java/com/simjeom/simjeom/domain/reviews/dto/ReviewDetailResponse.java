@@ -6,6 +6,6 @@ import lombok.Data;
 @Data @Builder
 public class ReviewDetailResponse {
 
-  private  ReviewDTO review;
+  private ReviewDto review;
 
 }

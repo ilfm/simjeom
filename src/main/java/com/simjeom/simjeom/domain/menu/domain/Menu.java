@@ -1,4 +1,4 @@
-package com.simjeom.simjeom.domain.restaurant.domain;
+package com.simjeom.simjeom.domain.menu.domain;
 
 import com.simjeom.simjeom.domain.global.BaseEntity;
 import jakarta.persistence.Column;
@@ -16,41 +16,40 @@ import org.hibernate.annotations.Parameter;
 @Entity
 @Getter
 @Setter
-@SequenceGenerator(name = "RESTAURANT_SEQ", sequenceName = "RESTAURANT_SEQ", allocationSize = 1)
-public class Restaurant extends BaseEntity {
+@SequenceGenerator(name = "MENU_SEQ", sequenceName = "MENU_SEQ", allocationSize = 1)
+public class Menu extends BaseEntity {
 
-  protected Restaurant(){
+  protected Menu(){
 
   }
   @Builder
-  public Restaurant(String restaurantNm) {
-    this.restaurantNm = restaurantNm;
+  public Menu(String menuNm) {
+    this.menuNm = menuNm;
   }
 
-  // 식당id, 식당명, 운영일, 등록일, 수정일, 방문횟수,
+  // 메뉴id, 메뉴명, 등록일, 수정일, 먹은횟수,
   @Id
   @GenericGenerator(name = "SeqGenerator", strategy = "com.simjeom.simjeom.domain.global.SeqGenerator"
-                    , parameters = {@Parameter(name="SEQ_NAME",value="RESTAURANT_SEQ"),
-                                   @Parameter(name="PREFIX",value="RT")})
+                    , parameters = {@Parameter(name="SEQ_NAME",value="MENU_SEQ"),
+                                   @Parameter(name="PREFIX",value="MN")})
   @GeneratedValue(generator ="SeqGenerator")
-  private String restaurantId;
+  private String menuId;
 
   @Column(nullable = false)
-  private String restaurantNm;    // 식당명
+  private String menuNm;         // 메뉴명
 
   @Column(nullable = true)
   @Builder.Default
-  @ColumnDefault("1")
-  private Integer visitCnt =1;      //방문횟수jenwkwjen
+  @ColumnDefault("0")
+  private Integer eatCnt = 0;   // 먹은횟수
 
   @Column(nullable = true)
   private String remark;       // 기타사항
 
   // 생성 메소드
-  public static Restaurant createRestaurant(String restaurantNm) {
-
-    return Restaurant.builder()
-        .restaurantNm(restaurantNm)
+  public static Menu createMenu(String menuNm) {
+    return Menu.builder()
+        .menuNm(menuNm)
         .build();
   }
 }
