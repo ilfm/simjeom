@@ -30,7 +30,6 @@ public class ReviewService {
   private final MenuRepository menuRepository;
   private final KeywordRepository keywordRepository;
   private final ReviewJpaRepository reviewJpaRepository;
-  //private final
 
   /**
    * 리뷰 등록
@@ -39,7 +38,6 @@ public class ReviewService {
   public String registerReview(CreateReviewRequest request) {
 
     // 메뉴 중복체크
-
     Menu menu = Menu.builder().menuNm(request.getMenuNm()).build();
     String menuId = menuRepository.save(menu);
     Menu findMenu = menuRepository.findById(menuId);
