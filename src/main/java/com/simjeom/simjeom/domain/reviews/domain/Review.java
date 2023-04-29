@@ -24,7 +24,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @SequenceGenerator(name = "REVIEW_SEQ", sequenceName = "REVIEW_SEQ", allocationSize = 1)
 public class Review extends BaseEntity {
 
@@ -62,7 +63,9 @@ public class Review extends BaseEntity {
   @Column
   private LocalDateTime visitDt;
 
-  public void setMenu(Menu menu) {  this.menu = menu;  }
+  public void setMenu(Menu menu) {
+    this.menu = menu;
+  }
 
   // 연관관계 편의 메소드 ======================================================================
   public void addReviewKeyword(ReviewKeyword reviewKeyword) {
@@ -71,12 +74,12 @@ public class Review extends BaseEntity {
   }
   // ========================================================================================
 
-  public static Review createReview(CreateReviewRequest request, Menu menu,
-      List<ReviewKeyword> reviewKeywords) {
+  public static Review createReview(CreateReviewRequest request, Menu menu, List<ReviewKeyword> reviewKeywords) {
     Review review = new Review();
     review.setStar(request.getStar());
     review.setComment(request.getComment());
     review.setMenu(menu);
+    review.setRestaurantNm(request.getRestaurantNm());
     review.setVisitDt(review.getVisitDt());
 
     for (ReviewKeyword reviewKeyword : reviewKeywords) {

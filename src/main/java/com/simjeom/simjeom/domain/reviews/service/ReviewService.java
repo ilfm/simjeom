@@ -3,8 +3,10 @@ package com.simjeom.simjeom.domain.reviews.service;
 
 import com.simjeom.simjeom.domain.keyword.domain.Keyword;
 import com.simjeom.simjeom.domain.keyword.repository.KeywordRepository;
+import com.simjeom.simjeom.domain.keyword.service.KeywordService;
 import com.simjeom.simjeom.domain.menu.domain.Menu;
 import com.simjeom.simjeom.domain.menu.repository.MenuRepository;
+import com.simjeom.simjeom.domain.menu.service.MenuService;
 import com.simjeom.simjeom.domain.reviews.domain.Review;
 import com.simjeom.simjeom.domain.reviews.domain.ReviewKeyword;
 import com.simjeom.simjeom.domain.reviews.dto.CreateReviewRequest;
@@ -28,7 +30,8 @@ public class ReviewService {
 
   private final ReviewRepository reviewRepository;
   private final MenuRepository menuRepository;
-  private final KeywordRepository keywordRepository;
+  private final MenuService menuService;
+  private final KeywordService keywordService;
   private final ReviewJpaRepository reviewJpaRepository;
 
   /**
@@ -37,18 +40,17 @@ public class ReviewService {
   @Transactional
   public String registerReview(CreateReviewRequest request) {
 
-    // 메뉴 중복체크
-    Menu menu = Menu.builder().menuNm(request.getMenuNm()).build();
-    String menuId = menuRepository.save(menu);
+    // menu 중복체크
+    String menuId = menuService.checkDuplicated(request.getMenuNm());
     Menu findMenu = menuRepository.findById(menuId);
 
     List<ReviewKeyword> reviewKeywords = new ArrayList<>();
 
-    // todo keyword 중복체크
+    // keyword 중복체크
     for (String keyword : request.getKeywords()) {
-      String keywordId = keywordRepository.save(Keyword.createKeyword(keyword));
+      String keywordId = keywordService.checkKeywordsDuplicated(keyword);
       ReviewKeyword reviewKeyword = ReviewKeyword.createReviewKeyword(
-          keywordRepository.findById(keywordId));
+          keywordService.findById(keywordId));
       reviewKeywords.add(reviewKeyword);
     }
 
