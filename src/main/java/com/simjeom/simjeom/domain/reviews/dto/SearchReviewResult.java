@@ -12,7 +12,9 @@ public interface SearchReviewResult {
 
   String getComment();
 
-  String getVisitDt();  // 최근 방문일
+  String getMenuNm();
+
+  String getEatDt();  // 최근 방문일
 
   String getRestaurantNm();
 

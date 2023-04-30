@@ -32,7 +32,12 @@ class ReviewJpaRepositoryTest {
 
   @Test
   public void 리뷰_전체_조회(){
-
+    reviewJpaRepository.findAllReview().forEach(reviewDto -> {
+      System.out.println("reviewDto.getMenuNm() = " + reviewDto.getMenuNm());
+      System.out.println("reviewDto.getRestaurantNm() = " + reviewDto.getRestaurantNm());
+      System.out.println("reviewDto.getStar() = " + reviewDto.getStar());
+      System.out.println("reviewDto.getLastEatDt() = " + reviewDto.getLastEatDt());
+    });
 
   }
 

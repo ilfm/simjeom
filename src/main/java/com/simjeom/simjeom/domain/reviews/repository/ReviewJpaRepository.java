@@ -28,7 +28,7 @@ public interface ReviewJpaRepository extends JpaRepository<Review, String> {
    * */
 
   /*
-   * 리뷰 전체 조회
+   * 리뷰 전체 조회 old
    * */
   @Query(value =
       "SELECT r.review_id as reviewId"
@@ -50,7 +50,7 @@ public interface ReviewJpaRepository extends JpaRepository<Review, String> {
   List<SearchReviewResult> findReviewByKeywords();
 
   /**
-   *  상세조회
+   * 상세조회
    */
   @Query("SELECT r.reviewId as reviewId"
       + ", r.star as star"
@@ -66,11 +66,11 @@ public interface ReviewJpaRepository extends JpaRepository<Review, String> {
   DetailReviewResult getReviewDetail();
 
   /*
-  * 페치조인은 dto로 반환 안된다.
-  * fetch join을 사용하는 이유는 엔티티 상태에서 엔티티 그래프를 참조하기 위해서 사용하는 것입니다.
-  *  따라서 당연히 엔티티가 아닌 DTO 상태로 조회하는 것은 불가능합니다.
-  *
-  * */
+   * 페치조인은 dto로 반환 안된다.
+   * fetch join을 사용하는 이유는 엔티티 상태에서 엔티티 그래프를 참조하기 위해서 사용하는 것입니다.
+   *  따라서 당연히 엔티티가 아닌 DTO 상태로 조회하는 것은 불가능합니다.
+   *
+   * */
 
   /**
    * 리뷰 검색
@@ -83,11 +83,11 @@ public interface ReviewJpaRepository extends JpaRepository<Review, String> {
           + " ,rt.visit_cnt as visitCnt"
           //+ " ,r.visit_dt as visitDt"
           + " , (select GROUP_CONCAT(k.keyword_Nm SEPARATOR ', ')"
-            + " FROM review_Keyword rk"
-            + " LEFT JOIN keyword k"
-            + " ON rk.keyword_Id = k.keyword_Id"
-            + " where rk.review_id = r.review_id"
-            + " group by rk.review_id ) as keywords"
+          + " FROM review_Keyword rk"
+          + " LEFT JOIN keyword k"
+          + " ON rk.keyword_Id = k.keyword_Id"
+          + " where rk.review_id = r.review_id"
+          + " group by rk.review_id ) as keywords"
           + " FROM Review r"
           + " LEFT JOIN Restaurant rt"
           + " ON r.restaurant_Id = rt.restaurant_Id "
@@ -96,7 +96,7 @@ public interface ReviewJpaRepository extends JpaRepository<Review, String> {
           + " LEFT JOIN keyword k"
           + " ON rk.keyword_Id = k.keyword_Id"
           + " WHERE (:keywords is null or k.keyword_nm IN :keywords)"     // keyword가 null 일때는 전체조회
-          , nativeQuery = true)
+      , nativeQuery = true)
   List<SearchReviewResult> searchReview(@Param("keywords") List<String> keywords);
 
 
@@ -128,11 +128,16 @@ public interface ReviewJpaRepository extends JpaRepository<Review, String> {
   List<SearchReviewResult> findByKeywords(@Param("keywords") List<String> keywords);
 
   /**
-   *  전체 리뷰조회
+   * 전체 리뷰조회
    */
-  @Query("SELECT new com.simjeom.simjeom.domain.reviews.dto.ReviewDto( r.reviewId, r.star as star, r.comment as comment, r.menu.menuNm as menuNm)"
+  @Query("SELECT new com.simjeom.simjeom.domain.reviews.dto.ReviewDto("
+      + " CAST(SUM(r.star)/COUNT(r.star) AS INTEGER) as star"
+      + ", MAX(r.restaurantNm) as restaurantNm"
+      + ", MAX(r.visitDt) as lastEatDt"
+      + ", r.menu.menuNm as menuNm)"
       + " FROM Review r"
       + " LEFT JOIN r.menu m"
+      + " GROUP BY m.menuId"
   )
   List<ReviewDto> findAllReview();
 

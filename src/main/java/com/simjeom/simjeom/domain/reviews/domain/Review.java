@@ -61,7 +61,7 @@ public class Review extends BaseEntity {
   private String comment;
 
   @Column
-  private LocalDateTime visitDt;
+  private String visitDt;
 
   public void setMenu(Menu menu) {
     this.menu = menu;
@@ -80,7 +80,7 @@ public class Review extends BaseEntity {
     review.setComment(request.getComment());
     review.setMenu(menu);
     review.setRestaurantNm(request.getRestaurantNm());
-    review.setVisitDt(review.getVisitDt());
+    review.setVisitDt(request.getVisitDt());
 
     for (ReviewKeyword reviewKeyword : reviewKeywords) {
       review.addReviewKeyword(reviewKeyword);

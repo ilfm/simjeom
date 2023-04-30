@@ -23,12 +23,12 @@ class ReviewServiceTest {
   @Rollback(value = false)
   public void 리뷰등록(){
     CreateReviewRequest review =CreateReviewRequest.builder()
-        .comment("맛있어용")
-        .menuNm("육회덮밥")
+        .comment("진짜 짱맛~")
+        .menuNm("팟타이")
         .star(5)
-        .restaurantNm("광시탕")
-        .visitDt("2023-04-29")
-        .keywords(new String[]{"가성비","가까움"})
+        .restaurantNm("리틀방콕")
+        .visitDt("2023-04-10")
+        .keywords(new String[]{"비쌈","가까움","웨이팅없음"})
         .build();
 
     String reviewId = reviewService.registerReview(review);
